@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Git checkout') {
             steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/jaiswaladi246/springboot-java-poject.git'
+                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/codebysergio/springboot-java-poject.git'
             }
         }
         
@@ -25,7 +25,18 @@ pipeline {
                  }
         }
         
+        stage('Dependecny-check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan target/', odcInstallation: 'owasp' 
+                     dependencyCheckPublisher pattern: '**/dependency-check-report xm1'
+            }
+        } 
         
-         
+        stage('Tomcat Deploy') {
+            steps {
+                sh "sudo cp target/spring-boot-web.jar /opt/apache-tomcat-9.0.65/webapps"
+        
+            }        
+        }
     }
-}
+} 
